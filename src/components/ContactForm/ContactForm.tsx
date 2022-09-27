@@ -1,25 +1,35 @@
 import { Component } from 'react'
 import styles from '../ContactForm/ContactForm.module.css';
-import PropTypes from 'prop-types';
+import React from 'react';
+import {INewContact} from '../../interfaces'
+interface IState{
+  name: string,
+  number:string
+}
+interface IProps{
+  addContact: (obj: Partial<INewContact>) => void
 
-export default class ContactForm extends Component {
+
+ }
+
+export default class ContactForm extends Component<IProps, IState> {
 
   state = {
     name: '',
     number: '',
   };
-  handleChanger = event => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+  handleChanger = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = event.target as EventTarget & { name: keyof IState ,value: string};
+    this.setState({ [name]: value } as Readonly <IState>);
   };
 
-  formSubmit = event => {
+  formSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
       event.preventDefault();
       
-      const newContact = {
-          name: this.state.name,
-          number:this.state.number,
-      }
+    const newContact = {
+        name: '',
+    number: '',
+      } as  Partial<INewContact>
      this.props.addContact(newContact);
     this.reset();
   };
@@ -27,7 +37,7 @@ export default class ContactForm extends Component {
   reset = () => {
     this.setState({ name: '', number: '' });
   };
-  render() {
+  render():JSX.Element {
     return (
       <>
         <form className={styles.form} onSubmit={this.formSubmit}>
@@ -63,6 +73,6 @@ export default class ContactForm extends Component {
     )
   }
 }
-ContactForm.propTypes = {
-    addContact:PropTypes.func.isRequired,
-}
+// ContactForm.propTypes = {
+//     addContact:PropTypes.func.isRequired,
+// }
